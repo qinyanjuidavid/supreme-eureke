@@ -90,6 +90,7 @@ class UserSignupForm(forms.ModelForm):
         user = super().save(commit=False)
         user.is_active = True
         user.role = RoleChoices.SUPERUSER
+        user.phone_no = self.cleaned_data["phone"]
         user.set_password(self.cleaned_data["password"])
         if commit:
             user.save()
