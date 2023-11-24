@@ -1,0 +1,47 @@
+{% extends "accounts/base.html" %} {% load i18n %} {% load crispy_forms_tags %}
+
+<!--Block Header-->
+{% block head_title %} {% translate "Sign Up" %} {% endblock head_title %}
+
+<!--Block Content-->
+{% block content %}
+<div class="container">
+  <div class="row h-100 justify-content-center align-items-center">
+    <div class="col-md-5 mt-2">
+      <div class="card shadow-md mt-5">
+        <div class="card-header text-center" style="background-color: #02474c">
+          <legend style="color: #ffffff">Let's get started,</legend>
+          <h6 style="color: #ffffff">Create a new account to continue</h6>
+        </div>
+
+        <div class="card-body">
+          <form
+            method="POST"
+            action="{% url 'accounts:signup' %}"
+            enctype="multipart/form-data"
+          >
+            {%csrf_token%} {{form|crispy}}
+          
+
+            <!-- Submit button -->
+            <button
+              type="submit"
+              class="btn btn-outline-primary col-md-12 btn-block mb-4 mt-3"
+            >
+              Sign up
+            </button>
+
+            <!-- Register buttons -->
+            <div class="text-center">
+              <p>
+                Already have an account?
+                <a href="{%url 'accounts:login'%}">Login Here</a>
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
