@@ -64,5 +64,8 @@ def HomeView(request):
     """
     View for the home page.
     """
-    context = {}
+    userQuery = User.objects.all()
+    context = {
+        "users": userQuery,
+    }
     return render(request, "pages/home.html", context)
