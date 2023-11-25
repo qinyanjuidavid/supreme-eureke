@@ -1,6 +1,7 @@
 -r base.txt
 
-psycopg2-binary==2.9.9
+Werkzeug[watchdog]==2.3.7
+psycopg[c]==3.1.9
 
 # Code Quality
 flake8==6.1.0

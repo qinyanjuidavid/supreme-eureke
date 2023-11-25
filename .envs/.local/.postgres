@@ -1,6 +1,7 @@
 # PostgreSQL
+# ------------------------------------------------------------------------------
 POSTGRES_HOST=postgres
 POSTGRES_PORT=5432
-POSTGRES_DB=dj_starter
-POSTGRES_USER=hj78ngkek
-POSTGRES_PASSWORD=8849dtypoqlvxz
+POSTGRES_DB=interintel
+POSTGRES_USER=RrgcPLVEDByJolsvtejDyuGscBOQnCTs
+POSTGRES_PASSWORD=369Mw2ETOZjGSHQ1knDNtouLPreMDj0Pc4pP4qEjNMuNydxki1fVxmUI5gurVrHY

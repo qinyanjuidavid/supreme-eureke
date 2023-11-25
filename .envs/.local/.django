@@ -1,5 +1,14 @@
-DJANGO_READ_DOT_ENV_FILE=True
-DATABASE_URL=postgres://postgres.qejczahteveiszawirlj:35695065D.q@aws-0-us-east-1.pooler.supabase.com:6543/postgres
-DJANGO_DEBUG=True
-
+# General
+# ------------------------------------------------------------------------------
 USE_DOCKER=yes
+IPYTHONDIR=/app/.ipython
+# Redis
+# ------------------------------------------------------------------------------
+# REDIS_URL=redis://redis:6379/0
+
+# Celery
+# ------------------------------------------------------------------------------
+
+# Flower
+# CELERY_FLOWER_USER=XZJcGgvPPHKqmiWIdwjyYIxXVmOlNqis
+# CELERY_FLOWER_PASSWORD=J8fnWdx0gLyQvkoW8XBFF1TDM5sFEgQ0akUn6RETHHVG1QOfoVvaZEh0rxpgbs6C
