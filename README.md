@@ -179,6 +179,26 @@ print("Decrypted Data:", decrypted_data)
 ```
 ## SECTION B
 ### 1. Create a login and a success page in Django. A mockup of the created pages should also be submitted. The mockups should have been created by using advanced design/wireframe tools thus showcasing prowess in usage of the tools and use of production server deployments on uwsgi/nginx. Ensure that the sessions are well and securely managed.(60 pts)
+#### Introduction
+- This Django project aims to create a user management system with features for user registration, authentication, and profile management. The project follows a modular structure with distinct components for models, forms, views, and URLs.
+## Running the project
+- To run the project ensure you have the docker desktop and then run the command
+```bash
+$ docker-compose -f local.yml up
+```
+### Setting Up Your Users
+
+- To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your console to see a simulated email verification message. Copy the link into your browser. Now the user's email should be verified and ready to go.
+
+For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
+
+### Running migrations
+
+```bash
+$ docker compose -f local.yml run --rm django python manage.py migrate
+$ docker compose -f local.yml run --rm django python manage.py createsuperuser
+```
+
 #### Design
 - To view the design go to [InterIntel](https://www.figma.com/file/bj9G2Ki6wwj8kamlAUsRgM/InterIntel?type=design&node-id=3%3A5&mode=design&t=6XHRV4oiwIA3j1m6-1)
 
@@ -186,5 +206,371 @@ print("Decrypted Data:", decrypted_data)
 ![Login_page](https://github.com/qinyanjuidavid/supreme-eureke/assets/49823575/fea33034-6b96-493e-895a-944162339362)
 #### Success Page Design
 ![success_page](https://github.com/qinyanjuidavid/supreme-eureke/assets/49823575/67df3665-f5f2-4373-9c6d-22e3d248680d)
+#### Code Overview
+##### models
+- In Django, models are Python classes that define the structure of database tables and the relationships between them. They serve as a blueprint for creating, querying, updating, and deleting records in the database. Models encapsulate the application's data structure and business logic. In my code i have the
+###### Tracking model
+- The tracking model is an Abstract model which helps me to track when an object was created or updated, the purpose for this model is to prevent repetition of the updated_at and created_at field.
+```python
+class Constants(models.TextChoices):
+    """
+    A class to define constants YES and NO for flag fields.
+    """
+
+    YES = "Yes", ("Yes")
+    NO = "No", ("No")
 
 
+class TrackingModel(models.Model):
+    """
+    Abstract base model for tracking creation and update timestamps.
+    """
+
+    created_at = models.DateTimeField(_("created at"), auto_now_add=True)
+    updated_at = models.DateTimeField(_("updated at"), auto_now=True)
+    updated_flag = models.CharField(
+        _("updated flag"),
+        max_length=3,
+        choices=Constants.choices,
+        default=Constants.NO,
+    )
+
+    class Meta:
+        abstract = True
+```
+###### User model
+- In the user model i have am extending the Abstract base user, the purpose for this model is to help in storing the data that is related to the user, such as name, email, phone, is_active, etc
+```python
+class RoleChoices(models.TextChoices):
+    """
+    Enumeration of possible user roles.
+    """
+
+    SUPERUSER = "SUPERUSER", ("SUPERUSER")
+
+
+class User(AbstractBaseUser, PermissionsMixin, TrackingModel):
+    """
+    Custom User model representing a user of the application.
+    """
+
+    name = models.CharField(_("full name"), blank=True, max_length=255)
+    email = models.EmailField(_("email address"), unique=True)
+    phone_no = models.CharField(
+        _("phone number"),
+        max_length=56,
+        blank=True,
+        null=True,
+    )
+    is_staff = models.BooleanField(_("staff"), default=False)
+    is_active = models.BooleanField(_("active"), default=False)
+    is_superuser = models.BooleanField(_("superuser"), default=False)
+    role = models.CharField(
+        _("role"),
+        max_length=20,
+        choices=RoleChoices.choices,
+        # default=RoleChoices.,
+    )
+
+    groups = models.ManyToManyField(
+        Group,
+        verbose_name=_("groups"),
+        blank=True,
+        help_text=_("The groups this user belongs to."),
+        related_name="user_set",
+        related_query_name="user",
+    )
+    user_permissions = models.ManyToManyField(
+        "auth.Permission",
+        verbose_name=_("user permissions"),
+        blank=True,
+        help_text=_("Specific permissions for this user."),
+        related_name="user_set",
+        related_query_name="user",
+    )
+    timestamp = models.DateTimeField(_("date joined"), auto_now_add=True)
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
+
+    objects = UserManager()
+
+    class Meta:
+        verbose_name_plural = "users"
+        ordering = ["-id"]
+
+    def __str__(self):
+        """
+        Returns a string representation of the user object.
+
+        Returns:
+            str: The user's email address.
+        """
+        return self.email
+
+    def email_user(self, subject, message, from_email=None, **kwargs):
+        """
+        Sends an email to the user.
+
+        Args:
+            subject (str): The subject of the email.
+            message (str): The content of the email.
+            from_email (str, optional): The sender's email address.
+            Defaults to None.
+            **kwargs: Additional keyword arguments accepted by Django's
+            `send_mail` function.
+        """
+        send_mail(subject, message, from_email, [self.email], **kwargs)
+
+    @property
+    def superuser(self):
+        """
+        Property indicating whether the user is a superuser.
+
+        Returns:
+            bool: True if the user is a superuser, False otherwise.
+        """
+        return self.is_superuser
+
+    @property
+    def staff(self):
+        """
+        Property indicating whether the user is a staff member.
+
+        Returns:
+            bool: True if the user is a staff member, False otherwise.
+        """
+        return self.is_staff
+
+    @property
+    def active(self):
+        """
+        Property indicating whether the user account is active.
+
+        Returns:
+            bool: True if the user account is active, False otherwise.
+        """
+        return self.is_active
+  ```
+###### Profile model
+- The profile model is a model that helps in storing the other data that are releted to the user such as profile picture, gender, bio and date_of_birth. In my case i always prefer  separating the users profile based on the various roles defined by the project.
+```python
+class Profile(models.Model):
+    """
+    User profile
+    """
+
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name="%(class)s_profile",
+    )
+
+    profile_image = models.ImageField(
+        _("profile picture"),
+        upload_to="profile_images",
+        null=True,
+        blank=True,
+        default="default.png",
+    )
+    bio = models.TextField(_("bio"), max_length=500, null=True, blank=True)
+    gender = models.CharField(
+        _("gender"),
+        max_length=1,
+        choices=GenderChoices.choices,
+        default=GenderChoices.PREFER_NOT_TO_SAY,
+    )
+    date_of_birth = models.DateField(_("date of birth"), null=True, blank=True)
+
+    def __str__(self):
+        return self.user.email
+
+    class Meta:
+        abstract = True
+
+
+class SuperUser(Profile):
+    """
+    Model representing app Superusers.
+    """
+
+    def __str__(self):
+        return self.user.email or self.user.phone_no
+
+    class Meta:
+        verbose_name_plural = "Super Users"
+        ordering = ["-id"]
+```
+
+##### Forms
+- In Django, forms play a crucial role in handling user input, validation, and interaction with the application's data models. Forms provide a convenient way to create HTML forms and handle user-submitted data in a structured manner. Django forms are defined as Python classes and are part of the Django forms library.
+###### UserSignupForm
+- The UserSignupForm is responsible for handling user registration and signup. It collects information such as name, email, phone number, password, and password confirmation from the user.
+
+```python
+class UserSignupForm(forms.ModelForm):
+    """
+    A form for user registration/signup.
+    """
+
+    name = forms.CharField(max_length=255, required=True)
+    email = forms.EmailField(max_length=156, required=True)
+    phone = forms.CharField(max_length=20, required=True)
+    password = forms.CharField(label="Password", widget=forms.PasswordInput)
+    password_confirmation = forms.CharField(
+        label="Password Confirmation",
+        widget=forms.PasswordInput,
+    )
+
+    class Meta:
+        """
+        Meta class for UserSignupForm.
+
+        Specifies the model and fields to be used in the form.
+        """
+
+        model = User
+        fields = ("name", "phone", "email", "password", "password_confirmation")
+
+    def clean(self):
+        """
+        Clean method for additional form-wide validation.
+
+        Raises:
+            forms.ValidationError: If the passwords do not match.
+        Returns:
+            dict: The cleaned form data.
+        """
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        password_confirmation = cleaned_data.get("password_confirmation")
+
+        if password and password_confirmation and password != password_confirmation:
+            raise forms.ValidationError("The passwords do not match.")
+
+        return cleaned_data
+
+    @transaction.atomic
+    def save(self, commit=True):
+        """
+        Save method to create and save a new user instance.
+
+        Args:
+            commit (bool): If True, save the user instance to the database.
+
+        Returns:
+            User: The created user instance.
+        """
+        user = super().save(commit=False)
+        user.is_active = True
+        user.role = RoleChoices.SUPERUSER
+        user.phone_no = self.cleaned_data["phone"]
+        user.set_password(self.cleaned_data["password"])
+        if commit:
+            user.save()
+        return user
+
+  ```
+###### CustomAuthenticationForm
+- The CustomAuthenticationForm extends Django's built-in AuthenticationForm, customizing the login form. It replaces the default username field with an email field.
+
+```python
+class CustomAuthenticationForm(AuthenticationForm):
+    """
+    A custom authentication form that extends Django's AuthenticationForm.
+    """
+
+    email = EmailField(
+        label=_("Email address"),
+        widget=forms.EmailInput(attrs={"class": "form-control"}),
+    )
+    password = forms.CharField(
+        label=_("Password"),
+        strip=False,
+        widget=forms.PasswordInput(attrs={"class": "form-control"}),
+    )
+
+    class Meta:
+        fields = ["email", "password"]
+
+    field_order = ["email", "password"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if "username" in self.fields:
+            del self.fields["username"]
+```
+
+##### Views
+- In Django, views are responsible for processing user requests, handling business logic, and returning appropriate responses, often in the form of HTML pages. Views determine what content is displayed to the user and how interactions with that content are managed.
+
+###### SignupView
+- The SignupView is a class-based view used for user registration and signup. It leverages Django's CreateView to simplify the creation of a view for creating a new object (in this case, a user).
+```python
+class SignupView(CreateView):
+    """
+    View for user registration/signup.
+    """
+
+    model = User
+    form_class = UserSignupForm
+    template_name = "accounts/signup.html"
+    success_url = reverse_lazy("accounts:login")
+
+    def get_context_data(self, **kwargs):
+        """
+        Get the context data for rendering the template.
+        """
+        kwargs["user_type"] = RoleChoices.SUPERUSER
+        return super().get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        """
+        Process a valid form submission.
+        """
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.save()
+            return redirect(self.success_url)
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
+  ```
+######  LoginView
+- The loginView function-based view is responsible for handling user login.
+```python
+def loginView(request):
+    """
+    View for user login.
+    """
+    if request.method == "POST":
+        form = CustomAuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get("email")
+            password = form.cleaned_data.get("password")
+            user = authenticate(request, email=email, password=password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, "Login success.")
+                # Redirect to the success page.
+                return HttpResponseRedirect(reverse("accounts:home"))
+    else:
+        form = CustomAuthenticationForm()
+
+    return render(request, "accounts/login.html", {"form": form})
+
+```
+###### HomeView
+- In my case the HomeView is the one responsible for showcasing the success page after the user logs in.
+```python
+@login_required
+def HomeView(request):
+    """
+    View for the home page.
+    """
+    userQuery = User.objects.all()
+    context = {
+        "users": userQuery,
+    }
+    return render(request, "pages/home.html", context)
+
+  ```
