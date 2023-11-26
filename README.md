@@ -574,3 +574,217 @@ def HomeView(request):
     return render(request, "pages/home.html", context)
 
   ```
+##### Templates
+###### base.html
+- The base.html serves as the foundational template for the entire application.
+It defines the overall structure of the HTML document, including meta tags, Bootstrap CSS links, and the necessary JavaScript scripts.
+- The template includes a navigation bar block ({% block navBar %}) and a content block ({% block content %}) that can be overridden by other templates.
+```html
+<!DOCTYPE html>
+{%load static%} {%load crispy_forms_tags%}
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+    crossorigin="anonymous">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+
+    <title>{%block head_title%}{%endblock%} | InterIntel!</title>
+  </head>
+  <body>
+    {%block navBar%}
+    {%endblock%}
+    <!-- messages -->
+    {% if messages %}
+    <div class="container">
+      <div class="messages p-3">
+        {% for message in messages %} {% if message.tags %}
+        <div
+          class="alert {% if message.tags == 'error' %}alert-danger{% endif %} {% if message.tags == 'success' %}alert-success{% endif %} {% if message.tags == 'warning' %}alert-warning{% endif %} {% if message.tags == 'info' %}alert-info{% endif %}"
+          role="alert"
+        >
+          {{ message }}
+        </div>
+        {% else %}
+        <div class="alert alert-secondary" role="alert">{{ message }}</div>
+        {% endif %} {% endfor %}
+      </div>
+    </div>
+    {% endif %} {%block content%} {%endblock%}
+
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+    -->
+  </body>
+</html>
+```
+
+###### login.html
+- The login.html template extends base.html and focuses specifically on the login functionality. It includes a form for user login, styled using Bootstrap and Crispy Forms.
+- Users can input their email and password, with options for "Remember Me" and a link to reset the password. The template provides a clean and user-friendly interface for the login process.
+```html
+{% extends "accounts/base.html" %} {% load i18n %} {% load crispy_forms_tags %}
+
+<!--Block Header-->
+{% block head_title %} {% translate "Sign In" %} {% endblock head_title %}
+
+<!--Block Content-->
+{% block content %}
+<div class="container">
+  <div class="row h-100 justify-content-center align-items-center">
+    <div class="col-md-4 mt-5">
+      <div class="card shadow-md mt-5">
+        <div class="card-header text-center" style="background-color: #02474c">
+          <legend style="color: #ffffff">Welcome Back,</legend>
+          <h6 style="color: #ffffff">sign in to continue</h6>
+        </div>
+
+        <div class="card-body">
+          <form
+            method="POST"
+            action="{% url 'accounts:login' %}"
+            enctype="multipart/form-data"
+          >
+            {%csrf_token%} {{form|crispy}}
+            <!-- 2 column grid layout for inline styling -->
+            <div class="row mb-4">
+              <div class="col d-flex justify-content-center">
+                <!-- Checkbox -->
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value=""
+                    id="form2Example31"
+                    checked
+                  />
+                  <label class="form-check-label" for="form2Example31">
+                    Remember me
+                  </label>
+                </div>
+              </div>
+
+              <div class="col">
+                <!-- Simple link -->
+                <a href="{%url 'accounts:password_reset'%}">Forgot password?</a>
+              </div>
+            </div>
+
+            <!-- Submit button -->
+            <button
+              type="submit"
+              class="btn btn-outline-primary col-md-12 btn-block mb-4"
+            >
+              Sign in
+            </button>
+
+            <!-- Register buttons -->
+            <div class="text-center">
+              <p>
+                Don't have an account?
+                <a href="{%url 'accounts:signup'%}">Register Here</a>
+              </p>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+```
+![LoginScreen](https://github.com/qinyanjuidavid/supreme-eureke/assets/49823575/4a57ec60-ae67-4e39-aaeb-27f41eca86e4)
+
+###### home.html
+- The home.html template also extends base.html and represents the home page of the application. It includes a navigation bar block and a table displaying information about users.
+- The table showcases user details such as email, name, phone number, role, date joined, and status indicators for activity and superuser status.
+- The template provides a visually appealing and informative view for users after they log in.
+```html
+{% extends "accounts/base.html" %}
+{% load i18n %}
+
+<!--Block Header-->
+{% block head_title %} {% translate "Home" %} {% endblock head_title %}
+
+{% block navBar %}
+  {% include 'includes/navbar.html' %}
+{% endblock %}
+
+<!--Block content-->
+{% block content %}
+  <div class="container">
+    <div class="jumbotron mt-4">
+      <legend class="mt-3" align="left">List of users</legend>
+      <table class="table table-striped table-bordered">
+        <tr>
+          <thead class="text-white" style="background-color: #02474c">
+            <th>#</th>
+            <th>Email address</th>
+            <th>Name</th>
+            <th>Phone number</th>
+            <th>Role</th>
+            <th>Date joined</th>
+            <th>Active</th>
+            <th>Superuser</th>
+          </thead>
+        </tr>
+        {% if users %}
+          {% for user in users %}
+            <tr>
+              <td>{{ forloop.counter }}.</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.name }}</td>
+              <td>{{ user.phone_no|default:"" }}</td>
+              <td>{{ user.role }}</td>
+              <td>{{ user.timestamp }}</td>
+              <td>
+                {% if user.is_active %}
+                  <i class="fa fa-check fa-md text-success"></i>
+                {% else %}
+                  <i class="fa fa-times fa-md text-danger"></i>
+                {% endif %}
+              </td>
+              <td>
+                {% if user.is_superuser or user.role == "SUPERUSER" %}
+                  <i class="fa fa-check fa-md text-success"></i>
+                {% else %}
+                  <i class="fa fa-times fa-md text-danger"></i>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <!-- Display an empty row if there are no users -->
+          <tr>
+            <td colspan="8">No users available</td>
+          </tr>
+        {% endif %}
+      </table>
+    </div>
+  </div>
+{% endblock content %}
+```
+![successScreen](https://github.com/qinyanjuidavid/supreme-eureke/assets/49823575/ffd05264-72dd-4ea7-81f9-9e35fc3b62a9)
+
+
