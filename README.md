@@ -62,3 +62,111 @@ print("GraphQL Response:", response.json())
 - To address the challenge of high load, horizontal scaling is implemented by deploying multiple instances of the application. Nginx is selected as the load balancer due to its versatility and ability to evenly distribute traffic among the instances.
 ### 2. Performance Monitoring
 - Monitoring the system's performance is paramount for identifying bottlenecks and ensuring optimal operation. Prometheus and Grafana are chosen for their robust monitoring capabilities.
+
+### 3. Give examples of different encryption/hashing methods you have come across (one way and two way) and give example scripts in python 3 on how to achieve each one. (20 pts)
+#### One-Way Encryption/Hashing Methods
+
+##### 1. SHA-256 Hashing
+- SHA-256 is a widely used one-way hashing algorithm that produces a fixed-size output, regardless of the input size. It is commonly used to store password hashes securely.
+
+```python
+import hashlib
+
+def hash_password(password):
+    # Hash the password using SHA-256
+    hashed_password = hashlib.sha256(password.encode()).hexdigest()
+    return hashed_password
+
+# Example usage
+password = "myStrongPassword"
+hashed_password = hash_password(password)
+print("Hashed Password:", hashed_password)
+```
+
+##### 2. bcrypt for Password Hashing
+- bcrypt is a key derivation function designed for secure password hashing. It incorporates a salt and a cost factor to increase computational complexity, making it resistant to brute-force attacks.
+
+```python
+import bcrypt
+
+def hash_password(password):
+    # Hash the password using bcrypt
+    hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+    return hashed_password
+
+# Example usage
+password = "myStrongPassword"
+hashed_password = hash_password(password)
+print("Hashed Password:", hashed_password)
+```
+
+## Two-Way Encryption Methods
+### 1. Fernet Symmetric Encryption
+- Fernet is a symmetric encryption method using a shared secret key. It provides a simple and secure way to encrypt and decrypt data.
+```python
+from cryptography.fernet import Fernet
+
+def encrypt_data(data, key):
+    cipher_suite = Fernet(key)
+    cipher_text = cipher_suite.encrypt(data.encode())
+    return cipher_text
+
+def decrypt_data(cipher_text, key):
+    cipher_suite = Fernet(key)
+    decrypted_data = cipher_suite.decrypt(cipher_text).decode()
+    return decrypted_data
+
+# Example usage
+shared_key = Fernet.generate_key()
+data_to_encrypt = "myStrongPassword"
+encrypted_data = encrypt_data(data_to_encrypt, shared_key)
+decrypted_data = decrypt_data(encrypted_data, shared_key)
+
+print("Encrypted Data:", encrypted_data)
+print("Decrypted Data:", decrypted_data)
+```
+
+##### 2. RSA Asymmetric Encryption
+- RSA is an asymmetric encryption algorithm using public and private key pairs. It is commonly used for secure communication and digital signatures.
+```python
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import rsa, padding
+
+def encrypt_data(data, public_key):
+    cipher_text = public_key.encrypt(
+        data.encode(),
+        padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
+        )
+    )
+    return cipher_text
+
+def decrypt_data(cipher_text, private_key):
+    decrypted_data = private_key.decrypt(
+        cipher_text,
+        padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA256()),
+            algorithm=hashes.SHA256(),
+            label=None
+        )
+    ).decode()
+    return decrypted_data
+
+# Example usage
+private_key = rsa.generate_private_key(
+    public_exponent=65537,
+    key_size=2048,
+    backend=default_backend()
+)
+public_key = private_key.public_key()
+
+data_to_encrypt = "myStrongPassword"
+encrypted_data = encrypt_data(data_to_encrypt, public_key)
+decrypted_data = decrypt_data(encrypted_data, private_key)
+
+print("Encrypted Data:", encrypted_data)
+print("Decrypted Data:", decrypted_data)
+```
