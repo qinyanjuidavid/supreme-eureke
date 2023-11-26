@@ -1,10 +1,15 @@
 # supreme-eureke
+
 ## SECTION A
+
 ### 1. Give examples of different integration protocols you have come across and give example scripts in python 3 on how to achieve each one. (10 pts)
+
 #### 1. RESTful API
+
 RESTful APIs are widely used for communication between systems. They are based on standard HTTP methods (GET, POST, PUT, PATCH and DELETE) and often use JSON for data exchange.
 
 **Example:**
+
 ```python
 import requests
 
@@ -22,9 +27,11 @@ print("POST Response:", post_response.json())
 ```
 
 #### 2. GraphQL
+
 GraphQL is a query language for APIs that allows clients to request only the data they need. It provides a more flexible and efficient alternative to traditional REST APIs.
 
 **Example:**
+
 ```python
 import requests
 
@@ -48,29 +55,43 @@ print("GraphQL Response:", response.json())
 ```
 
 ### 2. Give a walkthrough of how you will manage a data streaming application sending one million notifications every hour while giving examples of technologies and configurations you will use to manage load and asynchronous services. (10 pts)
+
 - Effectively managing a data streaming application that sends one million notifications every hour demands a strategic approach. In this walkthrough, I'll outline the key strategies and technologies I would employ to manage the load efficiently and ensure seamless asynchronous service processing.
 
 ### Technologies
+
 #### 1. Apache Kafka for Data Streaming
+
 - For robust data streaming, Apache Kafka is the chosen tool. Its selection is rooted in its unparalleled scalability, fault tolerance, and support for real-time event processing. Kafka's distributed architecture ensures high throughput and low latency, making it an ideal choice for handling the substantial load of one million notifications per hour.
+
 #### 2. Redis for Caching
+
 - Caching, a critical aspect of performance optimization, is entrusted to Redis. Redis stands out for its exceptional speed and versatility as an in-memory data store. Its ability to handle frequently accessed data efficiently aligns with the goal of improving data retrieval speed for our streaming application.
+
 #### 3. Celery for Asynchronous Processing
+
 - Asynchronous task handling is a key component of our strategy, and Celery is the chosen tool for this purpose. Celery's distributed architecture and support for various message brokers make it a robust solution for managing asynchronous tasks, ensuring optimal performance and reliability.
 
 ### Load Management Strategies
+
 ### 1. Horizontal Scaling
+
 - To address the challenge of high load, horizontal scaling is implemented by deploying multiple instances of the application. Nginx is selected as the load balancer due to its versatility and ability to evenly distribute traffic among the instances.
+
 ### 2. Performance Monitoring
+
 - Monitoring the system's performance is paramount for identifying bottlenecks and ensuring optimal operation. Prometheus and Grafana are chosen for their robust monitoring capabilities.
 
 ### 3. Give examples of different encryption/hashing methods you have come across (one way and two way) and give example scripts in python 3 on how to achieve each one. (20 pts)
+
 #### One-Way Encryption/Hashing Methods
 
 ##### 1. SHA-256 Hashing
+
 - SHA-256 is a widely used one-way hashing algorithm that produces a fixed-size output, regardless of the input size. It is commonly used to store password hashes securely.
 
 **Example:**
+
 ```python
 import hashlib
 
@@ -86,9 +107,11 @@ print("Hashed Password:", hashed_password)
 ```
 
 ##### 2. bcrypt for Password Hashing
+
 - bcrypt is a key derivation function designed for secure password hashing. It incorporates a salt and a cost factor to increase computational complexity, making it resistant to brute-force attacks.
 
 **Example:**
+
 ```python
 import bcrypt
 
@@ -104,10 +127,13 @@ print("Hashed Password:", hashed_password)
 ```
 
 #### Two-Way Encryption Methods
+
 ##### 1. Fernet Symmetric Encryption
+
 - Fernet is a symmetric encryption method using a shared secret key. It provides a simple and secure way to encrypt and decrypt data.
 
 **Example:**
+
 ```python
 from cryptography.fernet import Fernet
 
@@ -132,9 +158,11 @@ print("Decrypted Data:", decrypted_data)
 ```
 
 ##### 2. RSA Asymmetric Encryption
+
 - RSA is an asymmetric encryption algorithm using public and private key pairs. It is commonly used for secure communication and digital signatures.
 
 **Example:**
+
 ```python
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes
@@ -177,15 +205,23 @@ decrypted_data = decrypt_data(encrypted_data, private_key)
 print("Encrypted Data:", encrypted_data)
 print("Decrypted Data:", decrypted_data)
 ```
+
 ## SECTION B
+
 ### 1. Create a login and a success page in Django. A mockup of the created pages should also be submitted. The mockups should have been created by using advanced design/wireframe tools thus showcasing prowess in usage of the tools and use of production server deployments on uwsgi/nginx. Ensure that the sessions are well and securely managed.(60 pts)
+
 #### Introduction
+
 - This Django project aims to create a user management system with features for user registration, authentication, and profile management. The project follows a modular structure with distinct components for models, forms, views, and URLs.
+
 ## Running the project
+
 - To run the project ensure you have the docker desktop and then run the command
+
 ```bash
 $ docker-compose -f local.yml up
 ```
+
 ### Setting Up Your Users
 
 - To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your console to see a simulated email verification message. Copy the link into your browser. Now the user's email should be verified and ready to go.
@@ -200,17 +236,27 @@ $ docker compose -f local.yml run --rm django python manage.py createsuperuser
 ```
 
 #### Design
+
 - To view the design go to [InterIntel](https://www.figma.com/file/bj9G2Ki6wwj8kamlAUsRgM/InterIntel?type=design&node-id=3%3A5&mode=design&t=6XHRV4oiwIA3j1m6-1)
 
 #### Login Page Design
+
 ![Login_page](https://github.com/qinyanjuidavid/supreme-eureke/assets/49823575/fea33034-6b96-493e-895a-944162339362)
+
 #### Success Page Design
+
 ![success_page](https://github.com/qinyanjuidavid/supreme-eureke/assets/49823575/67df3665-f5f2-4373-9c6d-22e3d248680d)
+
 #### Code Overview
+
 ##### models
+
 - In Django, models are Python classes that define the structure of database tables and the relationships between them. They serve as a blueprint for creating, querying, updating, and deleting records in the database. Models encapsulate the application's data structure and business logic. In my code i have the
+
 ###### Tracking model
+
 - The tracking model is an Abstract model which helps me to track when an object was created or updated, the purpose for this model is to prevent repetition of the updated_at and created_at field.
+
 ```python
 class Constants(models.TextChoices):
     """
@@ -238,8 +284,11 @@ class TrackingModel(models.Model):
     class Meta:
         abstract = True
 ```
+
 ###### User model
+
 - In the user model i have am extending the Abstract base user, the purpose for this model is to help in storing the data that is related to the user, such as name, email, phone, is_active, etc
+
 ```python
 class RoleChoices(models.TextChoices):
     """
@@ -351,9 +400,12 @@ class User(AbstractBaseUser, PermissionsMixin, TrackingModel):
             bool: True if the user account is active, False otherwise.
         """
         return self.is_active
-  ```
+```
+
 ###### Profile model
-- The profile model is a model that helps in storing the other data that are releted to the user such as profile picture, gender, bio and date_of_birth. In my case i always prefer  separating the users profile based on the various roles defined by the project.
+
+- The profile model is a model that helps in storing the other data that are releted to the user such as profile picture, gender, bio and date_of_birth. In my case i always prefer separating the users profile based on the various roles defined by the project.
+
 ```python
 class Profile(models.Model):
     """
@@ -403,8 +455,11 @@ class SuperUser(Profile):
 ```
 
 ##### Forms
+
 - In Django, forms play a crucial role in handling user input, validation, and interaction with the application's data models. Forms provide a convenient way to create HTML forms and handle user-submitted data in a structured manner. Django forms are defined as Python classes and are part of the Django forms library.
+
 ###### UserSignupForm
+
 - The UserSignupForm is responsible for handling user registration and signup. It collects information such as name, email, phone number, password, and password confirmation from the user.
 
 ```python
@@ -470,8 +525,10 @@ class UserSignupForm(forms.ModelForm):
             user.save()
         return user
 
-  ```
+```
+
 ###### CustomAuthenticationForm
+
 - The CustomAuthenticationForm extends Django's built-in AuthenticationForm, customizing the login form. It replaces the default username field with an email field.
 
 ```python
@@ -502,10 +559,13 @@ class CustomAuthenticationForm(AuthenticationForm):
 ```
 
 ##### Views
+
 - In Django, views are responsible for processing user requests, handling business logic, and returning appropriate responses, often in the form of HTML pages. Views determine what content is displayed to the user and how interactions with that content are managed.
 
 ###### SignupView
+
 - The SignupView is a class-based view used for user registration and signup. It leverages Django's CreateView to simplify the creation of a view for creating a new object (in this case, a user).
+
 ```python
 class SignupView(CreateView):
     """
@@ -534,9 +594,12 @@ class SignupView(CreateView):
             return redirect(self.success_url)
         else:
             return self.render_to_response(self.get_context_data(form=form))
-  ```
-######  LoginView
+```
+
+###### LoginView
+
 - The loginView function-based view is responsible for handling user login.
+
 ```python
 def loginView(request):
     """
@@ -559,8 +622,11 @@ def loginView(request):
     return render(request, "accounts/login.html", {"form": form})
 
 ```
+
 ###### HomeView
+
 - In my case the HomeView is the one responsible for showcasing the success page after the user logs in.
+
 ```python
 @login_required
 def HomeView(request):
@@ -573,12 +639,16 @@ def HomeView(request):
     }
     return render(request, "pages/home.html", context)
 
-  ```
+```
+
 ##### Templates
+
 ###### base.html
+
 - The base.html serves as the foundational template for the entire application.
-It defines the overall structure of the HTML document, including meta tags, Bootstrap CSS links, and the necessary JavaScript scripts.
+  It defines the overall structure of the HTML document, including meta tags, Bootstrap CSS links, and the necessary JavaScript scripts.
 - The template includes a navigation bar block ({% block navBar %}) and a content block ({% block content %}) that can be overridden by other templates.
+
 ```html
 <!DOCTYPE html>
 {%load static%} {%load crispy_forms_tags%}
@@ -589,8 +659,12 @@ It defines the overall structure of the HTML document, including meta tags, Boot
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
-    crossorigin="anonymous">
+    <link
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+      integrity="sha384wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+      crossorigin="anonymous"
+    />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -601,8 +675,7 @@ It defines the overall structure of the HTML document, including meta tags, Boot
     <title>{%block head_title%}{%endblock%} | InterIntel!</title>
   </head>
   <body>
-    {%block navBar%}
-    {%endblock%}
+    {%block navBar%} {%endblock%}
     <!-- messages -->
     {% if messages %}
     <div class="container">
@@ -640,8 +713,10 @@ It defines the overall structure of the HTML document, including meta tags, Boot
 ```
 
 ###### login.html
+
 - The login.html template extends base.html and focuses specifically on the login functionality. It includes a form for user login, styled using Bootstrap and Crispy Forms.
 - Users can input their email and password, with options for "Remember Me" and a link to reset the password. The template provides a clean and user-friendly interface for the login process.
+
 ```html
 {% extends "accounts/base.html" %} {% load i18n %} {% load crispy_forms_tags %}
 
@@ -712,79 +787,74 @@ It defines the overall structure of the HTML document, including meta tags, Boot
   </div>
 </div>
 {% endblock content %}
-
 ```
+
 ![LoginScreen](https://github.com/qinyanjuidavid/supreme-eureke/assets/49823575/4a57ec60-ae67-4e39-aaeb-27f41eca86e4)
 
 ###### home.html
+
 - The home.html template also extends base.html and represents the home page of the application. It includes a navigation bar block and a table displaying information about users.
 - The table showcases user details such as email, name, phone number, role, date joined, and status indicators for activity and superuser status.
 - The template provides a visually appealing and informative view for users after they log in.
+
 ```html
-{% extends "accounts/base.html" %}
-{% load i18n %}
+{% extends "accounts/base.html" %} {% load i18n %}
 
 <!--Block Header-->
-{% block head_title %} {% translate "Home" %} {% endblock head_title %}
-
-{% block navBar %}
-  {% include 'includes/navbar.html' %}
-{% endblock %}
+{% block head_title %} {% translate "Home" %} {% endblock head_title %} {% block
+navBar %} {% include 'includes/navbar.html' %} {% endblock %}
 
 <!--Block content-->
 {% block content %}
-  <div class="container">
-    <div class="jumbotron mt-4">
-      <legend class="mt-3" align="left">List of users</legend>
-      <table class="table table-striped table-bordered">
-        <tr>
-          <thead class="text-white" style="background-color: #02474c">
-            <th>#</th>
-            <th>Email address</th>
-            <th>Name</th>
-            <th>Phone number</th>
-            <th>Role</th>
-            <th>Date joined</th>
-            <th>Active</th>
-            <th>Superuser</th>
-          </thead>
-        </tr>
-        {% if users %}
-          {% for user in users %}
-            <tr>
-              <td>{{ forloop.counter }}.</td>
-              <td>{{ user.email }}</td>
-              <td>{{ user.name }}</td>
-              <td>{{ user.phone_no|default:"" }}</td>
-              <td>{{ user.role }}</td>
-              <td>{{ user.timestamp }}</td>
-              <td>
-                {% if user.is_active %}
-                  <i class="fa fa-check fa-md text-success"></i>
-                {% else %}
-                  <i class="fa fa-times fa-md text-danger"></i>
-                {% endif %}
-              </td>
-              <td>
-                {% if user.is_superuser or user.role == "SUPERUSER" %}
-                  <i class="fa fa-check fa-md text-success"></i>
-                {% else %}
-                  <i class="fa fa-times fa-md text-danger"></i>
-                {% endif %}
-              </td>
-            </tr>
-          {% endfor %}
-        {% else %}
-          <!-- Display an empty row if there are no users -->
-          <tr>
-            <td colspan="8">No users available</td>
-          </tr>
-        {% endif %}
-      </table>
-    </div>
+<div class="container">
+  <div class="jumbotron mt-4">
+    <legend class="mt-3" align="left">List of users</legend>
+    <table class="table table-striped table-bordered">
+      <tr>
+        <thead class="text-white" style="background-color: #02474c">
+          <th>#</th>
+          <th>Email address</th>
+          <th>Name</th>
+          <th>Phone number</th>
+          <th>Role</th>
+          <th>Date joined</th>
+          <th>Active</th>
+          <th>Superuser</th>
+        </thead>
+      </tr>
+      {% if users %} {% for user in users %}
+      <tr>
+        <td>{{ forloop.counter }}.</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.phone_no|default:"" }}</td>
+        <td>{{ user.role }}</td>
+        <td>{{ user.timestamp }}</td>
+        <td>
+          {% if user.is_active %}
+          <i class="fa fa-check fa-md text-success"></i>
+          {% else %}
+          <i class="fa fa-times fa-md text-danger"></i>
+          {% endif %}
+        </td>
+        <td>
+          {% if user.is_superuser or user.role == "SUPERUSER" %}
+          <i class="fa fa-check fa-md text-success"></i>
+          {% else %}
+          <i class="fa fa-times fa-md text-danger"></i>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %} {% else %}
+      <!-- Display an empty row if there are no users -->
+      <tr>
+        <td colspan="8">No users available</td>
+      </tr>
+      {% endif %}
+    </table>
   </div>
+</div>
 {% endblock content %}
 ```
+
 ![successScreen](https://github.com/qinyanjuidavid/supreme-eureke/assets/49823575/ffd05264-72dd-4ea7-81f9-9e35fc3b62a9)
-
-
