@@ -178,3 +178,13 @@ print("Encrypted Data:", encrypted_data)
 print("Decrypted Data:", decrypted_data)
 ```
 ## SECTION B
+### 1. Create a login and a success page in Django. A mockup of the created pages should also be submitted. The mockups should have been created by using advanced design/wireframe tools thus showcasing prowess in usage of the tools and use of production server deployments on uwsgi/nginx. Ensure that the sessions are well and securely managed.(60 pts)
+#### Design
+- To view the design go to [InterIntel](https://www.figma.com/file/bj9G2Ki6wwj8kamlAUsRgM/InterIntel?type=design&node-id=3%3A5&mode=design&t=6XHRV4oiwIA3j1m6-1)
+
+#### Login Page Design
+![Login_page](https://github.com/qinyanjuidavid/supreme-eureke/assets/49823575/fea33034-6b96-493e-895a-944162339362)
+#### Success Page Design
+![success_page](https://github.com/qinyanjuidavid/supreme-eureke/assets/49823575/67df3665-f5f2-4373-9c6d-22e3d248680d)
+
+
