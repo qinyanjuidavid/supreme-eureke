@@ -23,6 +23,7 @@ print("POST Response:", post_response.json())
 
 #### 2. GraphQL
 GraphQL is a query language for APIs that allows clients to request only the data they need. It provides a more flexible and efficient alternative to traditional REST APIs.
+
 **Example:**
 ```python
 import requests
@@ -68,6 +69,7 @@ print("GraphQL Response:", response.json())
 
 ##### 1. SHA-256 Hashing
 - SHA-256 is a widely used one-way hashing algorithm that produces a fixed-size output, regardless of the input size. It is commonly used to store password hashes securely.
+
 **Example:**
 ```python
 import hashlib
@@ -85,6 +87,7 @@ print("Hashed Password:", hashed_password)
 
 ##### 2. bcrypt for Password Hashing
 - bcrypt is a key derivation function designed for secure password hashing. It incorporates a salt and a cost factor to increase computational complexity, making it resistant to brute-force attacks.
+
 **Example:**
 ```python
 import bcrypt
@@ -100,9 +103,10 @@ hashed_password = hash_password(password)
 print("Hashed Password:", hashed_password)
 ```
 
-## Two-Way Encryption Methods
-### 1. Fernet Symmetric Encryption
+#### Two-Way Encryption Methods
+##### 1. Fernet Symmetric Encryption
 - Fernet is a symmetric encryption method using a shared secret key. It provides a simple and secure way to encrypt and decrypt data.
+
 **Example:**
 ```python
 from cryptography.fernet import Fernet
@@ -129,6 +133,7 @@ print("Decrypted Data:", decrypted_data)
 
 ##### 2. RSA Asymmetric Encryption
 - RSA is an asymmetric encryption algorithm using public and private key pairs. It is commonly used for secure communication and digital signatures.
+
 **Example:**
 ```python
 from cryptography.hazmat.backends import default_backend
