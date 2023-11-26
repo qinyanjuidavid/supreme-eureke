@@ -170,3 +170,4 @@ decrypted_data = decrypt_data(encrypted_data, private_key)
 print("Encrypted Data:", encrypted_data)
 print("Decrypted Data:", decrypted_data)
 ```
+## SECTION B
