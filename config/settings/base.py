@@ -109,35 +109,6 @@ CORS_ORIGIN_ALLOW_ALL = True
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DB_USERNAME = env("POSTGRES_USER")
-# DB_PASSWORD = env("POSTGRES_PASSWORD")
-# DB_DATABASE = env("POSTGRES_DB")
-# DB_HOST = env("POSTGRES_HOST")
-# DB_PORT = env("POSTGRES_PORT")
-
-
-# DB_IS_AVAIL = all([DB_USERNAME, DB_DATABASE, DB_PASSWORD, DB_HOST, DB_PORT])
-# if DB_IS_AVAIL:
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.postgresql",
-#             "NAME": DB_DATABASE,
-#             "USER": DB_USERNAME,
-#             "PASSWORD": DB_PASSWORD,
-#             "HOST": DB_HOST,
-#             "PORT": DB_PORT,
-#         }
-#     }
-#     print(DATABASES)
-
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
-# }
-# DATABASES = {"default": env.db("DATABASE_URL")}
-# DATABASES["default"]["ATOMIC_REQUESTS"] = True
 DATABASES = {"default": env.db("DATABASE_URL")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 # Password validation
